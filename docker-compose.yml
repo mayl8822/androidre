@@ -7,7 +7,7 @@ services:
       args:
         - SSH_PASSWORD=mypass
         - VNC_PASSWORD=mypass
-    image: cryptax/android-re:2025.11
+    image: cryptax/android-re:2026.06
     container_name: android-retools
     ports:
       - "6022:22"

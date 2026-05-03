@@ -4,7 +4,7 @@ WORKDIR /opt
 RUN git clone --recursive https://github.com/CalebFenton/simplify
 RUN git clone https://github.com/skylot/jadx.git
 
-FROM gradle:8.2 AS build
+FROM gradle:8.11 AS build
 WORKDIR /opt
 COPY --from=clone /opt/jadx /opt/jadx
 RUN cd /opt/jadx && ./gradlew dist
@@ -12,17 +12,17 @@ RUN cd /opt/jadx && ./gradlew dist
 # ------------------------- Android Reverse Engineering environment image
 FROM ubuntu:24.04
 
-ENV REFRESHED_AT 2025-11-18
+ENV REFRESHED_AT 2026-05-03
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG SSH_PASSWORD 
 ARG VNC_PASSWORD
-ENV AXMLPRINTER_VERSION "0.1.7"
+ENV AXMLPRINTER_VERSION "2.0.1"
 ENV APKTOOL_VERSION "2.12.1"
 ENV DEX2JAR_VERSION "2.4"
-ENV FRIDA_VERSION "17.5.1"
+ENV FRIDA_VERSION "17.9.5"
 ENV JD_VERSION "1.6.6"
-ENV SMALI_VERSION "2.5.2"
+ENV SMALI_VERSION "3.0.9"
 ENV UBERAPK_VERSION "1.3.0"
 
 # For DroidLysis: libxml2-dev libxslt-dev libmagic-dev
@@ -71,11 +71,11 @@ RUN . $VENV_DIR/bin/activate && pip3 install --no-cache-dir apkid
 # Apktool
 RUN mkdir -p /opt/apktool
 RUN wget -q -O "/opt/apktool/apktool" https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool
-RUN wget -q -O "/opt/apktool/apktool.jar" https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_$APKTOOL_VERSION.jar && chmod u+x /opt/apktool/apktool /opt/apktool/apktool.jar
+RUN wget -q -O "/opt/apktool/apktool.jar" https://github.com/iBotPeaches/Apktool/releases/download/v$APKTOOL_VERSION/apktool_$APKTOOL_VERSION.jar && chmod u+x /opt/apktool/apktool /opt/apktool/apktool.jar
 ENV PATH $PATH:/opt/apktool
 
 # AXMLPrinter
-RUN wget -q -O "/opt/axmlprinter.jar" https://github.com/rednaga/axmlprinter/releases/download/${AXMLPRINTER_VERSION}/axmlprinter-${AXMLPRINTER_VERSION}.jar
+RUN wget -q -O "/opt/axmlprinter.jar" https://github.com/rednaga/axmlprinter/releases/download/v${AXMLPRINTER_VERSION}/axmlprinter-${AXMLPRINTER_VERSION}.jar
 
 # Dex2Jar
 RUN wget -q -O "/opt/dex2jar.zip" https://github.com/pxb1988/dex2jar/releases/download/v${DEX2JAR_VERSION}/dex-tools-v${DEX2JAR_VERSION}.zip && cd /opt \
@@ -134,10 +134,8 @@ RUN r2pm -U && r2pm -ci r2ai r2mcp decai
 #RUN ~/bin/r2pm init && ~/bin/r2pm update && ~/bin/r2pm install r2frida && pip3 install r2pipe
 
 # Install Smali / Baksmali
-RUN wget -q -O "/opt/smali.jar" "https://bitbucket.org/JesusFreke/smali/downloads/smali-${SMALI_VERSION}.jar"
-RUN wget -q -O "/opt/baksmali.jar" "https://bitbucket.org/JesusFreke/smali/downloads/baksmali-${SMALI_VERSION}.jar"
-RUN wget -q -O "/opt/smali" "https://bitbucket.org/JesusFreke/smali/downloads/smali"
-RUN wget -q -O "/opt/baksmali" "https://bitbucket.org/JesusFreke/smali/downloads/baksmali"
+RUN wget -q -O "/opt/smali.jar" "https://github.com/baksmali/smali/releases/download/${SMALI_VERSION}/smali-${SMALI_VERSION}.jar"
+RUN wget -q -O "/opt/baksmali.jar" "https://github.com/baksmali/smali/releases/download/${SMALI_VERSION}/baksmali-${SMALI_VERSION}-fat.jar"
 ENV PATH $PATH:/opt
 
 # uber-apk-signer
